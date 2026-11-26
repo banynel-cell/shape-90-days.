@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101019">
+<title>SHAPE 90 DAYS</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101019;color:white;font-family:Arial,sans-serif}
+main{max-width:650px;margin:auto;padding:20px 15px 50px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.brand{font-size:23px;font-weight:900}
+.brand span{color:#a78bfa}
+.tag{background:#302344;padding:8px 12px;border-radius:20px;font-size:12px}
+.card{background:#1b1b28;border:1px solid #343448;border-radius:18px;padding:18px;margin-bottom:15px}
+small,.muted{color:#aaa}
+.eyebrow{color:#b99cff;font-size:11px;font-weight:bold;letter-spacing:1px}
+.big{font-size:40px;font-weight:bold;margin:10px 0}
+.bar{height:9px;background:#393448;border-radius:20px;overflow:hidden}
+.bar i{display:block;height:100%;background:#a78bfa;width:0}
+.stats{display:flex;justify-content:space-between;font-size:12px;color:#c9b9ed;margin-top:10px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}
+button,select,input,textarea{font:inherit}
+.tab,.day,.secondary{background:#242436;color:white;border:1px solid #39394c;border-radius:12px;padding:12px}
+.tab.active,.day.active{background:#39275a;border-color:#a78bfa}
+select,input,textarea{width:100%;padding:12px;background:#242436;color:white;border:1px solid #39394c;border-radius:10px;margin:8px 0}
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0}
+.day{font-weight:bold}
+.day strong{display:block;font-size:22px}
+.day small{font-size:10px}
+.day.done{border-color:#4ade80}
+h2{font-size:20px;margin:10px 0}
+.exercise{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #343448}
+.exercise input{width:21px;height:21px;accent-color:#a78bfa}
+.exercise label{flex:1;font-size:14px}
+.exercise small{display:block;color:#b99cff;margin-top:4px}
+.primary{width:100%;padding:15px;background:#8b5cf6;color:white;border:0;border-radius:12px;font-weight:bold;margin-top:15px}
+.note{font-size:12px;color:#aaa;line-height:1.5}
+.timer{text-align:center;background:#242436;padding:15px;border-radius:14px}
+.timer strong{font-size:38px;display:block;margin:10px}
+.timer-actions{display:flex;justify-content:center;gap:10px}
+.weekrow{display:grid;grid-template-columns:80px 1fr 35px;gap:10px;align-items:center;margin:14px 0;font-size:12px}
+.weekbar{height:8px;background:#393448;border-radius:20px;overflow:hidden}
+.weekbar i{display:block;height:100%;background:#a78bfa}
+footer{text-align:center;color:#777;font-size:11px;margin-top:25px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div>
+<div class="brand">⚡ SHAPE <span>90 DAYS</span></div>
+<small>DISCIPLINA • CONSTÂNCIA • EVOLUÇÃO</small>
+</div>
+<div class="tag">12 SEMANAS</div>
+</header>
+
+<section class="card">
+<div class="eyebrow">SEU PROJETO DE 90 DIAS</div>
+<div class="big" id="percent">0%</div>
+<div class="bar"><i id="overallBar"></i></div>
+<div class="stats">
+<span id="exerciseCount">0 exercícios</span>
+<span id="sessionCount">0/36 treinos</span>
+</div>
+</section>
+
+<nav class="tabs">
+<button class="tab active" data-tab="workout">Treino</button>
+<button class="tab" data-tab="progress">Progresso</button>
+<button class="tab" data-tab="profile">Registro</button>
+</nav>
+
+<section id="workout">
+<div class="eyebrow">ESCOLHA A SEMANA</div>
+<select id="week"></select>
+<div class="days" id="days"></div>
+
+<div class="card">
+<div class="eyebrow" id="dayTitle">TREINO A</div>
+<h2 id="workoutTitle"></h2>
+<div class="stats">
+<span>Exercícios concluídos</span>
+<b id="dayCount">0/5</b>
+</div>
+<div class="bar" style="margin:10px 0">
+<i id="dayBar"></i>
+</div>
+<div id="exerciseList"></div>
+<button class="primary" id="finishBtn">Concluir treino</button>
+<p class="note" id="finishHint">Marque os exercícios para concluir.</p>
+</div>
+
+<div class="card">
+<div class="eyebrow">CRONÔMETRO DE DESCANSO</div>
+<div class="timer">
+<strong id="timer">01:30</strong>
+<div class="timer-actions">
+<button class="secondary" id="startTimer">Iniciar</button>
+<button class="secondary" id="resetTimer">Reiniciar</button>
+</div>
+</div>
+<p class="note">Descanse de 60 a 120 segundos entre as séries.</p>
+</div>
+</section>
+
+<section id="progress" hidden>
+<div class="card">
+<div class="eyebrow">SEU HISTÓRICO</div>
+<h2 id="progressSessions">0 de 36 treinos</h2>
+<div id="weeks"></div>
+</div>
+</section>
+
+<section id="profile" hidden>
+<div class="card">
+<div class="eyebrow">MEU REGISTRO</div>
+<h2>Acompanhe sua evolução</h2>
+<label class="note">Peso corporal (kg)</label>
+<input id="weight" type="number" placeholder="Ex.: 55">
+<label class="note">Anotações</label>
+<textarea id="notes" rows="4" placeholder="Como foi seu treino?"></textarea>
+<button class="primary" id="saveProfile">Salvar registro</button>
+<p class="note" id="savedMsg"></p>
+</div>
+<div class="card">
+<div class="eyebrow">PROJETO</div>
+<p id="startDate"></p>
+<p class="note">Seus dados ficam salvos neste aparelho.</p>
+<button class="secondary" id="exportData">Exportar progresso</button>
+</div>
+</section>
+
+<footer>SHAPE 90 DAYS • SUA EVOLUÇÃO COMEÇA HOJE</footer>
+</main>
+
+<script>
+const plans={
+A:{
+day:"SEGUNDA",
+title:"Peito, Ombro e Tríceps",
+ex:[
+["Flexão tradicional","3 × 10–15"],
+["Flexão diamante","3 × 6–10"],
+["Flexão pike","3 × 8–12"],
+["Flexão inclinada","2 × 12"],
+["Elevação lateral com garrafas","3 × 12–15"]
+]},
+B:{
+day:"QUARTA",
+title:"Costas e Bíceps",
+ex:[
+["Remada curvada com mochila","3 × 12–15"],
+["Remada unilateral com mochila","3 × 10 cada braço"],
+["Superman","3 × 15"],
+["Rosca bíceps com mochila","3 × 12"],
+["Rosca concentrada","2 × 10 cada braço"]
+]},
+C:{
+day:"SEXTA",
+title:"Core e Pernas",
+ex:[
+["Agachamento livre","3 × 15"],
+["Afundo","3 × 10 cada perna"],
+["Agachamento búlgaro","3 × 8 cada perna"],
+["Panturrilha em pé","3 × 20"],
+["Elevação de pernas","3 × 12"],
+["Abdominal bicicleta","3 × 20"],
+["Prancha","3 × 30 segundos"]
+]}
+};
+
+const $=id=>document.getElementById(id);
+let state=JSON.parse(localStorage.getItem("shape90")||"null")||{
+checks:{},sessions:[],weight:"",notes:"",started:new Date().toISOString()
+};
+let week=1,day="A",timerSeconds=90,timerInterval=null;
+
+function save(){
+localStorage.setItem("shape90",JSON.stringify(state));
+renderStats();
+}
+
+function renderStats(){
+let n=Object.values(state.checks).filter(Boolean).length;
+let total=12*(plans.A.ex.length+plans.B.ex.length+plans.C.ex.length);
+$("percent").textContent=Math.round(n/total*100)+"%";
+$("overallBar").style.width=(n/total*100)+"%";
+$("exerciseCount").textContent=n+" exercícios marcados";
+$("sessionCount").textContent=state.sessions.length+"/36 treinos";
+}
+
+$("week").innerHTML=Array.from({length:12},(_,i)=>
+`<option value="${i+1}">Semana ${i+1}</option>`
+).join("");
+
+$("days").innerHTML=[
+["A","SEG"],["B","QUA"],["C","SEX"]
+].map(([d,l])=>`
+<button class="day" data-day="${d}">
+<strong>${d}</strong><small>${l}</small>
+</button>`).join("");
+
+function renderWorkout(){
+let p=plans[day],k=week+"-"+day;
+let n=p.ex.filter((_,i)=>state.checks[k+"-"+i]).length;
+
+$("dayTitle").textContent="TREINO "+day+" • "+p.day;
+$("workoutTitle").textContent=p.title;
+$("dayCount").textContent=n+"/"+p.ex.length;
+$("dayBar").style.width=(n/p.ex.length*100)+"%";
+
+$("exerciseList").innerHTML=p.ex.map((e,i)=>`
+<div class="exercise">
+<input type="checkbox" id="ex${i}" data-index="${i}"
+${state.checks[k+"-"+i]?"checked":""}>
+<label for="ex${i}">
+<b>${e[0]}</b>
+<small>${e[1]}</small>
+</label>
+</div>`).join("");
+
+let completed=state.sessions.includes(k);
+$("finishBtn").disabled=n!==p.ex.length&&!completed;
+$("finishBtn").textContent=completed?"Treino concluído ✓":"Concluir treino";
+$("finishHint").textContent=n===p.ex.length?
+"Todos os exercícios foram marcados!":
+"Marque todos os exercícios para concluir.";
+
+document.querySelectorAll(".day").forEach(el=>{
+let d=el.dataset.day;
+el.classList.toggle("active",d===day);
+el.classList.toggle("done",state.sessions.includes(week+"-"+d));
+});
+
+renderStats();
+}
+
+$("days").addEventListener("click",e=>{
+let b=e.target.closest("[data-day]");
+if(b){day=b.dataset.day;renderWorkout();}
+});
+
+$("week").addEventListener("change",e=>{
+week=Number(e.target.value);
+renderWorkout();
+});
+
+$("exerciseList").addEventListener("change",e=>{
+if(e.target.matches("input[type=checkbox]")){
+let k=week+"-"+day+"-"+e.target.dataset.index;
+state.checks[k]=e.target.checked;
+save();
+renderWorkout();
+}
+});
+
+$("finishBtn").addEventListener("click",()=>{
+let k=week+"-"+day;
+if(state.sessions.includes(k)){
+state.sessions=state.sessions.filter(x=>x!==k);
+}else if(plans[day].ex.every((_,i)=>state.checks[k+"-"+i])){
+state.sessions.push(k);
+}
+save();
+renderWorkout();
+renderProgress();
+});
+
+document.querySelectorAll(".tab").forEach(b=>{
+b.addEventListener("click",()=>{
+document.querySelectorAll(".tab").forEach(x=>
+x.classList.toggle("active",x===b));
+["workout","progress","profile"].forEach(id=>{
+$(id).hidden=id!==b.dataset.tab;
+});
+if(b.dataset.tab==="progress")renderProgress();
+});
+});
+
+function renderProgress(){
+$("progressSessions").textContent=
+state.sessions.length+" de 36 treinos concluídos";
+
+$("weeks").innerHTML=Array.from({length:12},(_,i)=>{
+let n=["A","B","C"].filter(d=>
+state.sessions.includes((i+1)+"-"+d)).length;
+return `
+<div class="weekrow">
+<span>Semana ${i+1}</span>
+<div class="weekbar"><i style="width:${n/3*100}%"></i></div>
+<b>${n}/3</b>
+</div>`;
+}).join("");
+}
+
+function showTimer(){
+$("timer").textContent=
+String(Math.floor(timerSeconds/60)).padStart(2,"0")+":"+
+String(timerSeconds%60).padStart(2,"0");
+}
+
+$("startTimer").onclick=()=>{
+if(timerInterval){
+clearInterval(timerInterval);
+timerInterval=null;
+$("startTimer").textContent="Continuar";
+return;
+}
+$("startTimer").textContent="Pausar";
+timerInterval=setInterval(()=>{
+if(timerSeconds>0){
+timerSeconds--;
+showTimer();
+}else{
+clearInterval(timerInterval);
+timerInterval=null;
+$("startTimer").textContent="Iniciar";
+if("vibrate" in navigator)navigator.vibrate([200,100,200]);
+}
+},1000);
+};
+
+$("resetTimer").onclick=()=>{
+clearInterval(timerInterval);
+timerInterval=null;
+timerSeconds=90;
+showTimer();
+$("startTimer").textContent="Iniciar";
+};
+
+$("weight").value=state.weight;
+$("notes").value=state.notes;
+$("startDate").textContent=
+"Projeto iniciado em "+new Date(state.started).toLocaleDateString("pt-BR");
+
+$("saveProfile").onclick=()=>{
+state.weight=$("weight").value;
+state.notes=$("notes").value;
+save();
+$("savedMsg").textContent="Registro salvo! ✓";
+};
+
+$("exportData").onclick=()=>{
+let blob=new Blob([JSON.stringify(state,null,2)],{
+type:"application/json"
+});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="meu-progresso-shape90.json";
+a.click();
+URL.revokeObjectURL(a.href);
+};
+
+renderWorkout();
+renderStats();
+</script>
+</body>
+</html>
